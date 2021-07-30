@@ -1,0 +1,96 @@
+# Imports and making a Hydra
+import datetime
+import requests
+import discord
+from discord.ext import commands
+
+
+# Global variables
+TOKEN = "NzgxNTQ0ODkxOTkzNTU0OTU0.X7_MZg.otc2ffHBHX2M5M582ypal4mabTc"
+PREFIX = ['.', 'yo!', '~']
+COLOR = discord.Color.random()
+Author = "kuromi"
+
+# Presence Global Variable
+Playing = discord.Game('You My friend || .help')
+Streaming = discord.Streaming(name='kuromi', url='https://www.twitch.tv/basiturraza')
+Listening = discord.Activity(type=discord.ActivityType.listening, name=Author)
+Watching = discord.Activity(type=discord.ActivityType.watching, name=Author)
+
+# Hydra creation
+Hydra = commands.Bot(command_prefix=(PREFIX))
+
+
+# events and Presence
+@Hydra.event
+async def on_ready():
+    await Hydra.change_presence(activity=discord.Game('I am a Noob || ~help'))
+    print('Connected to Hydra: {}'.format(Hydra.user.name))
+    print('Hydra ID: {}'.format(Hydra.user.id))
+
+# all presence command
+
+@Hydra.event
+async def on_command_error(ctx, error):
+    if isinstance(error, commands.MissingRequiredArgument):
+        await ctx.send('Please pass in all requirements :rolling_eyes:.')
+
+
+# Playing Status command
+@Hydra.command(aliases=['status1', 'play'])
+@commands.has_permissions(administrator=True)
+async def statusplaying(ctx):
+    await Hydra.change_presence(activity=Playing)
+    EmbedForPlayingStatus = discord.Embed(title='Status Changed to Playing',color=COLOR,timestamp=TimeStamp)
+    await ctx.send(embed=EmbedForPlayingStatus)
+
+# Streaming Status command
+@Hydra.command(aliases=['status2', 'stream'])
+@commands.has_permissions(administrator=True)
+async def statusstreaming(ctx):
+    await Hydra.change_presence(activity=Streaming)
+    EmbedForStreamingStatus = discord.Embed(title='Status Changed to Streaming',color=COLOR,timestamp=TimeStamp)
+    await ctx.send(embed=EmbedForStreamingStatus)
+
+# Listening Status command
+@Hydra.command(aliases=['status3', 'listen'])
+@commands.has_permissions(administrator=True)
+async def statuslistening(ctx):
+    await Hydra.change_presence(activity=Listening)
+    EmbedForListeningStatus = discord.Embed(title='Status Changed to Listening',color=COLOR,timestamp=TimeStamp)
+    await ctx.send(embed=EmbedForListeningStatus)
+
+# Watching Status command
+@Hydra.command(aliases=['status4', 'watch'])
+@commands.has_permissions(administrator=True)
+async def statuswatching(ctx):
+    await Hydra.change_presence(activity=Watching)
+    EmbedForWatchingStatus = discord.Embed(title='Status Changed to Watching',color=COLOR,timestamp=TimeStamp)
+    await ctx.send(embed=EmbedForWatchingStatus)
+
+
+# Commands
+@Hydra.remove_command('help')
+@Hydra.command(pass_context=True)
+async def help(ctx):
+    help_ = discord.Embed(title="Help", description="Here I'll tell you how to use me.", timestamp=datetime.datetime.utcnow(), color=COLOR)
+    help_.add_field(name="My all Functions about chat bot", value=".ch <your message> OR . <your message>", inline=False)
+    help_.set_footer(text=f"Information requested by: {ctx.author.display_name}")
+    await ctx.send(embed=help_)
+
+@Hydra.command(aliases=['ch', '.', ''])
+async def chat_bot(ctx, *, args):
+    msg = args
+    path_ = requests.get(f'http://api.brainshop.ai/get?bid=158213&key=bjwuUPizXKlLSLml&uid=786&msg={msg}')
+    path_dic = path_.json()
+    # print(path_dic['cnt'])
+    chat_send = path_dic['cnt']
+    # no args error
+    if len(args) == 0:
+        await ctx.send('Please specify something for making conversation with me...')
+    # chat bot reply
+    if len(args) >= 1:
+        await ctx.send(chat_send)
+
+
+Hydra.run(TOKEN)

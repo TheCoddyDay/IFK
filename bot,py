@@ -7,7 +7,7 @@ from discord.ext import commands
 
 
 # Global variables
-TOKEN = "ODcwNjk0NTY5Njg2MjE2Nzk1.YQQfgg.AXtUtLncEXSCkKHxuSIf1zs2Gcw"
+TOKEN = ""
 PREFIX = ['.', 'yo!', '~']
 COLOR = discord.Color.random()
 Author = "kuromi"
